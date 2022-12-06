@@ -17,3 +17,13 @@ export const toastDefaultConfigs = {
   duration: '2500',
   isClosable: true,
 };
+
+export const callApi = async (url, options) => {
+  try {
+    const fetchResponse = await fetch(url, options);
+    const response = await fetchResponse?.json();
+    return [response, null];
+  } catch (error) {
+    return [null, error];
+  }
+};

@@ -2,7 +2,7 @@ import { Box, Button, Flex, Input, Text, useToast } from '@chakra-ui/react';
 import { useState } from 'react';
 import { AiOutlineArrowRight } from 'react-icons/ai';
 import Row from '../components/Row';
-import { seatLegend, toastDefaultConfigs } from '../utils/helpers';
+import { callApi, seatLegend, toastDefaultConfigs } from '../utils/helpers';
 
 const Home = () => {
   const toast = useToast(toastDefaultConfigs);
@@ -12,38 +12,69 @@ const Home = () => {
   const [selectedSeats, setSelectedSeats] = useState([]);
   const [totalPrice, setTotalPrice] = useState(20);
 
+  const reset = () => {
+    setRows(null);
+    setRowCount(0);
+    setSelectedSeats([]);
+    setTotalPrice(20);
+  };
+
   const fetchRows = async () => {
-    if (rowCount > 2 && rowCount < 11) {
-      try {
-        setLoading(true);
-        const resposne = await fetch(`${process.env.REACT_APP_API_URL}/seats?count=${rowCount}`);
-        const data = await resposne.json();
-        setRows(data?.data?.seats);
-      } catch (error) {
-        toast({
-          title: error?.message || 'Something went wrong',
-          status: 'error',
-        });
-      } finally {
-        setLoading(false);
-      }
-    } else {
-      toast({
-        title: 'Number of rows should be between 2 & 11',
+    if (rowCount <= 2 || rowCount >= 11) {
+      return toast({
+        description: 'Number of rows should be between 2 & 11',
         status: 'error',
       });
     }
+
+    setLoading(true);
+    const [response, error] = await callApi(
+      `${process.env.REACT_APP_API_URL}/seats?count=${rowCount}`,
+    );
+    setLoading(false);
+
+    if (error) {
+      return toast({
+        description: error?.message || 'Something went wrong',
+        status: 'error',
+      });
+    }
+
+    return setRows(response?.data?.seats);
   };
 
   const bookTicketHandler = async () => {
-    // TODO: add validation for before booking tickets + try catch in seperate helper fucntion
-    const options = {
+    // TODO: add header above input
+    // TODO: add useFul comments
+
+    if (selectedSeats?.length < 1 || selectedSeats?.length > 5) {
+      return toast({
+        description: 'Select a minimum of 1 seat and maximum of 5 seats.',
+        status: 'error',
+      });
+    }
+
+    setLoading(true);
+    const [response, error] = await callApi(`${process.env.REACT_APP_API_URL}/submit`, {
       method: 'POST',
       body: JSON.stringify(selectedSeats),
-    };
-    const response = await fetch(`${process.env.REACT_APP_API_URL}/submit`, options);
-    const data = await response.json();
-    return data;
+    });
+    setLoading(false);
+
+    if (error) {
+      return toast({
+        description: error?.message || 'Something went wrong',
+        status: 'error',
+      });
+    }
+
+    toast({
+      description: 'Tickets booked successfully',
+      status: 'success',
+    });
+    reset();
+
+    return response;
   };
 
   return (
@@ -121,17 +152,13 @@ const Home = () => {
               leftIcon={<AiOutlineArrowRight />}
               w="10rem"
               colorScheme="teal"
+              isLoading={loading}
             >
               Book now
             </Button>
           </Flex>
           <Button
-            onClick={() => {
-              setRows(null);
-              setRowCount(0);
-              setSelectedSeats([]);
-              setTotalPrice(20);
-            }}
+            onClick={reset}
             border="2px"
             borderColor="teal"
             bg="primary.bg"

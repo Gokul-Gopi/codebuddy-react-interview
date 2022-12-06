@@ -7,7 +7,7 @@ const Row = ({ seats, selectedSeats, setSelectedSeats, setTotalPrice }) => (
         key={seat?.id}
         onClick={() => {
           setSelectedSeats(preState => [...preState, seat?.id]);
-          setTotalPrice(preState => preState + seat?.row * 10);
+          setTotalPrice(preState => preState + (seat?.row + 1) * 10);
         }}
         direction="column"
         bg={
@@ -27,7 +27,7 @@ const Row = ({ seats, selectedSeats, setSelectedSeats, setTotalPrice }) => (
         justifyContent="center"
       >
         <Text fontWeight="500">{seat?.seatNumber}</Text>
-        <Text fontSize="0.7rem">Row: {seat?.row}</Text>
+        <Text fontSize="0.7rem">Row: {seat?.row + 1}</Text>
       </Flex>
     ))}
   </Flex>
