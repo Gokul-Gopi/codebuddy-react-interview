@@ -10,6 +10,8 @@ const theme = extendTheme({
   colors: {
     primary: {
       bg: '#051f27',
+      availableSeat: '#0d5161',
+      reservedSeat: '#092e38',
     },
   },
 });
