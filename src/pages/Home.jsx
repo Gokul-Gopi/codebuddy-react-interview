@@ -1,5 +1,6 @@
 import { Box, Button, Flex, Input, Text, useToast } from '@chakra-ui/react';
 import { useState } from 'react';
+import { AiOutlineArrowRight } from 'react-icons/ai';
 import Row from '../components/Row';
 import seatLegend from '../utils/helpers';
 
@@ -8,6 +9,8 @@ const Home = () => {
   const [rowCount, setRowCount] = useState(0);
   const [rows, setRows] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [selectedSeats, setSelectedSeats] = useState([]);
+  const [totalPrice, setTotalPrice] = useState(20);
 
   const fetchRows = async () => {
     if (rowCount > 2 && rowCount < 11) {
@@ -34,6 +37,16 @@ const Home = () => {
         status: 'error',
       });
     }
+  };
+
+  const bookTicketHandler = async () => {
+    const options = {
+      method: 'POST',
+      body: JSON.stringify(selectedSeats),
+    };
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/submit`, options);
+    const data = await response.json();
+    return data;
   };
 
   return (
@@ -73,7 +86,13 @@ const Home = () => {
           <Box overflowX="auto" width="100%">
             <Flex gap="1rem" direction="column" w={`${rowCount * 5}rem`} mx="auto">
               {rows?.map(rowDetails => (
-                <Row key={rowDetails?.id} seats={rowDetails?.seats} />
+                <Row
+                  key={rowDetails?.id}
+                  seats={rowDetails?.seats}
+                  selectedSeats={selectedSeats}
+                  setSelectedSeats={setSelectedSeats}
+                  setTotalPrice={setTotalPrice}
+                />
               ))}
             </Flex>
           </Box>
@@ -88,19 +107,29 @@ const Home = () => {
           <Flex gap="2rem" align="center">
             <Box>
               <Text fontSize="1.2rem" fontWeight="500">
-                $512.00
+                ${totalPrice}
               </Text>
               <Text fontStyle="italic" color="grey">
-                4 seats
+                {selectedSeats?.length} seats
               </Text>
             </Box>
 
-            <Button w="10rem" colorScheme="teal">
+            <Button
+              onClick={bookTicketHandler}
+              leftIcon={<AiOutlineArrowRight />}
+              w="10rem"
+              colorScheme="teal"
+            >
               Book now
             </Button>
           </Flex>
           <Button
-            onClick={() => setRows(null)}
+            onClick={() => {
+              setRows(null);
+              setRowCount(0);
+              setSelectedSeats([]);
+              setTotalPrice(20);
+            }}
             border="2px"
             borderColor="teal"
             bg="primary.bg"
