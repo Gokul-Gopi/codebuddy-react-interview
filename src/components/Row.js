@@ -6,8 +6,10 @@ const Row = ({ seats, selectedSeats, setSelectedSeats, setTotalPrice }) => (
       <Flex
         key={seat?.id}
         onClick={() => {
-          setSelectedSeats(preState => [...preState, seat?.id]);
-          setTotalPrice(preState => preState + (seat?.row + 1) * 10);
+          if (!selectedSeats.includes(seat?.id)) {
+            setSelectedSeats(preState => [...preState, seat?.id]);
+            setTotalPrice(preState => preState + (seat?.row + 1) * 10);
+          }
         }}
         direction="column"
         bg={
