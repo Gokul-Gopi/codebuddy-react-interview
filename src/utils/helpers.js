@@ -1,4 +1,4 @@
-const seatLegend = [
+export const seatLegend = [
   {
     name: 'Reserverd',
     color: 'primary.reservedSeat',
@@ -13,4 +13,7 @@ const seatLegend = [
   },
 ];
 
-export default seatLegend;
+export const toastDefaultConfigs = {
+  duration: '2500',
+  isClosable: true,
+};

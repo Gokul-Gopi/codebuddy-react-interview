@@ -2,12 +2,12 @@ import { Box, Button, Flex, Input, Text, useToast } from '@chakra-ui/react';
 import { useState } from 'react';
 import { AiOutlineArrowRight } from 'react-icons/ai';
 import Row from '../components/Row';
-import seatLegend from '../utils/helpers';
+import { seatLegend, toastDefaultConfigs } from '../utils/helpers';
 
 const Home = () => {
-  const toast = useToast();
+  const toast = useToast(toastDefaultConfigs);
   const [rowCount, setRowCount] = useState(0);
-  const [rows, setRows] = useState(null);
+  const [rows, setRows] = useState();
   const [loading, setLoading] = useState(false);
   const [selectedSeats, setSelectedSeats] = useState([]);
   const [totalPrice, setTotalPrice] = useState(20);
@@ -21,9 +21,7 @@ const Home = () => {
         setRows(data?.data?.seats);
       } catch (error) {
         toast({
-          duration: '2500',
           title: error?.message || 'Something went wrong',
-          isClosable: true,
           status: 'error',
         });
       } finally {
@@ -31,15 +29,14 @@ const Home = () => {
       }
     } else {
       toast({
-        duration: '2500',
         title: 'Number of rows should be between 2 & 11',
-        isClosable: true,
         status: 'error',
       });
     }
   };
 
   const bookTicketHandler = async () => {
+    // TODO: add validation for before booking tickets + try catch in seperate helper fucntion
     const options = {
       method: 'POST',
       body: JSON.stringify(selectedSeats),
@@ -83,7 +80,12 @@ const Home = () => {
               bg="white"
             />
           </Box>
-          <Box overflowX="auto" width="100%">
+          <Box
+            className="custom-scrollbar"
+            overflowX="auto"
+            width="100%"
+            py={{ base: '1rem', md: 0 }}
+          >
             <Flex gap="1rem" direction="column" w={`${rowCount * 5}rem`} mx="auto">
               {rows?.map(rowDetails => (
                 <Row

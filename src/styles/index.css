@@ -1,3 +1,18 @@
 body {
   font-size: 16px;
 }
+
+.custom-scrollbar::-webkit-scrollbar {
+  height: 0.3rem;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #319795;
+  border-radius: 10rem;
+  border: 2px solid rgba(0, 0, 0, 0.8);
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.8);
+  border-radius: 10rem;
+}
