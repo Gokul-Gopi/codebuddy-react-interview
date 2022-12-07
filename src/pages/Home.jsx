@@ -7,9 +7,10 @@ import { callApi, seatLegend, toastDefaultConfigs } from '../utils/helpers';
 const Home = () => {
   const toast = useToast(toastDefaultConfigs);
   const [rowCount, setRowCount] = useState(0);
-  const [rows, setRows] = useState();
+  const [rows, setRows] = useState(null);
   const [loading, setLoading] = useState(false);
   const [selectedSeats, setSelectedSeats] = useState([]);
+  // default price set as 20, as movie costs 20 and the cost increases as seats are added
   const [totalPrice, setTotalPrice] = useState(20);
 
   const reset = () => {
@@ -44,9 +45,6 @@ const Home = () => {
   };
 
   const bookTicketHandler = async () => {
-    // TODO: add header above input
-    // TODO: add useFul comments
-
     if (selectedSeats?.length < 1 || selectedSeats?.length > 5) {
       return toast({
         description: 'Select a minimum of 1 seat and maximum of 5 seats.',
@@ -89,6 +87,7 @@ const Home = () => {
     >
       {!rows ? (
         <Box>
+          <Text mb="0.2rem">Enter number of rows</Text>
           <Input
             placeholder="Number of rows"
             value={rowCount}
@@ -100,6 +99,7 @@ const Home = () => {
         </Box>
       ) : (
         <Flex direction="column" gap="2rem" w={{ base: '100%', md: '60rem' }} align="center">
+          {/* screen */}
           <Box w="100%" textAlign="center" mb="2rem">
             <Text mb="1rem" fontSize="0.85rem" letterSpacing="3px">
               EYES HERE
@@ -111,6 +111,7 @@ const Home = () => {
               bg="white"
             />
           </Box>
+          {/* seats */}
           <Box
             className="custom-scrollbar"
             overflowX="auto"
@@ -129,6 +130,7 @@ const Home = () => {
               ))}
             </Flex>
           </Box>
+          {/* legend */}
           <Flex flexWrap="wrap" px="1rem" mt="2rem" justifyContent="center" gap="1rem">
             {seatLegend.map(e => (
               <Flex key={e.name} align="center" gap="0.3rem">
@@ -137,6 +139,7 @@ const Home = () => {
               </Flex>
             ))}
           </Flex>
+          {/* display price and seats */}
           <Flex gap="2rem" align="center">
             <Box>
               <Text fontSize="1.2rem" fontWeight="500">

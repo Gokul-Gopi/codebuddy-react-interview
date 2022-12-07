@@ -1,6 +1,7 @@
 import { Flex, Text } from '@chakra-ui/react';
 
 const Row = ({ seats, selectedSeats, setSelectedSeats, setTotalPrice }) => (
+  // added 1 to seat?.row as it 0 indexed
   <Flex justifyContent="center" gap="2rem">
     {seats.map(seat => (
       <Flex
